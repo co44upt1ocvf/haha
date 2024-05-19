@@ -1,41 +1,75 @@
-public class Gun {
-    private String modelName; // переменные
-    private int quantity;
+import java.util.Random;
 
-    public Gun(String modelName, int quantity) { // конструктор класса
+abstract class Gun {
+    protected String modelName;
+    protected int currentBullets;
+    protected boolean isBroken;
+    protected int remainingBullets;
+
+    public Gun(String modelName) {
         this.modelName = modelName;
-        this.quantity = quantity;
+        this.currentBullets = 0;
+        this.isBroken = false;
+        this.remainingBullets = 0;
     }
 
-    public void manufactureMachineGun() {
-        System.out.println("Производство пулемета: " + modelName);
+    public abstract void manufacture(int productionQuantity);
+    public abstract void calculateMaintenanceCost(double cost, int maintenanceInterval);
+    public abstract void use(String target, int bullets);
+    public abstract void repair();
+    public abstract void reload(int bulletQuantity);
+
+    public void sellLease(int quantity, boolean isLease, String customerInfo) {
+        String transactionType = isLease ? "Аренда" : "Продажа";
+        System.out.println(transactionType + " оружия: " + modelName + ", количество: " + quantity + ". Информация о клиенте: " + customerInfo);
+
+        boolean creditCheck = checkCredit(customerInfo);
+        if (!creditCheck) {
+            System.out.println("Клиент " + customerInfo + " не прошел проверку кредитоспособности.");
+            return;
+        }
+
+        boolean contractSigned = signContract(customerInfo, transactionType, quantity);
+        if (!contractSigned) {
+            System.out.println("Не удалось подписать договор с клиентом " + customerInfo);
+            return;
+        }
+
+        System.out.println(transactionType + " оружия " + modelName + " завершена.");
     }
 
-    public void sellMachineGun() {
-        System.out.println("Продажа пулемета: " + modelName + ", количество: " + quantity);
+    protected boolean checkResourcesAvailability() {
+        Random random = new Random();
+        int availableMaterials = random.nextInt(2000);
+        int requiredMaterials = random.nextInt(1000);
+        return availableMaterials >= requiredMaterials;
     }
 
-    public void calculateMaintenanceCost() {
-        System.out.println("Расчет затрат на обслуживание оружия: " + modelName);
+    protected int calculateProductionTime(int productionQuantity) {
+        Random random = new Random();
+        int productionTimePerUnit = random.nextInt(5) + 1;
+        return productionQuantity * productionTimePerUnit;
     }
 
-    public void useHandgun() {
-        System.out.println("Использование пистолета: " + modelName);
+    protected double calculateWearCost(int maintenanceInterval) {
+        Random random = new Random();
+        double wearFactor = random.nextDouble() * 0.2;
+        double baseWearCost = random.nextInt(200);
+        return baseWearCost * wearFactor * maintenanceInterval;
     }
 
-    public void repairGun() {
-        System.out.println("Ремонт оружия: " + modelName);
+    protected double calculateSparePartsCost() {
+        Random random = new Random();
+        return random.nextInt(200);
     }
 
-    public void reloadGun() {
-        System.out.println("Перезарядка оружия: " + modelName);
+    protected boolean checkCredit(String customerInfo) {
+        Random random = new Random();
+        return random.nextBoolean();
     }
 
-    public void manufactureCustomGun() {
-        System.out.println("Производство индивидуального оружия: " + modelName);
-    }
-
-    public void sellLeaseGun() {
-        System.out.println("Продажа или аренда оружия: " + modelName + ", количество: " + quantity);
+    protected boolean signContract(String customerInfo, String transactionType, int quantity) {
+        Random random = new Random();
+        return random.nextBoolean();
     }
 }
